@@ -54,12 +54,12 @@ export default function Contacts({userContacts, currentUser}){
     return(
         <SafeAreaView style={styles.container}>
                 {          
-                !contactInfo.length == 0 ? (contactInfo.map( (user) => {
+                !contactInfo.length == 0 ? (contactInfo.map( (user, index) => {
                 const usersArray = [];
                 const promises = [];
 
                 return(
-                    <View key={user.email}>
+                    <View key={index}>
                      <TouchableOpacity style={styles.child} onPress={() => navigation.push("chat", {user: user, currentUser: currentUser.id})}>
                          <Image style={styles.avatar} source={require("../../assets/avatar.png")}/>
                          <View style={styles.texts} key={user.email}>

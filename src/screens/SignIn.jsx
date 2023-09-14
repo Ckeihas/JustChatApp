@@ -9,7 +9,7 @@ export default function SignIn(){
     const [password, setPassword] = useState("");
     const navigation = useNavigation();
     const signUserIn = () => {
-        signInWithEmailAndPassword(auth, email, password)
+        signInWithEmailAndPassword(auth, email.toLowerCase(), password)
         .then((userCredential) => {
             // Signed in 
             const user = userCredential.user;
@@ -34,6 +34,7 @@ export default function SignIn(){
             style={styles.input}
             onChangeText={setPassword}
             placeholder="Password"
+            secureTextEntry={true}
             />
             <Button title="Sign In" onPress={() => signUserIn()}/>
         </SafeAreaView>

@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import React, { useState, useEffect } from "react"
 import { useNavigation } from "@react-navigation/native";
 import { collection, addDoc, query, where, getDocs, getDoc } from "firebase/firestore";
+import {IOS_CLIENT_ID, ANDROID_CLIENT_ID} from "@env"
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -16,8 +17,8 @@ export default function SignUp(){
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [request, response, promptAsync] = Google.useAuthRequest({
-        iosClientId: "300465958210-8tuioghc0ojvsannd1hot9q3qhivqqde.apps.googleusercontent.com",
-        androidClientId: "300465958210-g8878nn7586gvt0vf7g3npdcg2k4ev03.apps.googleusercontent.com",
+        iosClientId: IOS_CLIENT_ID,
+        androidClientId: ANDROID_CLIENT_ID,
     });
 
     const navigation = useNavigation();
@@ -105,6 +106,7 @@ export default function SignUp(){
                 style={styles.input}
                 onChangeText={setPassword}
                 placeholder="Password"
+                secureTextEntry={true}
                 />
                 <View style={styles.emailBtn}>
                     <Button style={{color: 'red'}} title="Email" onPress={() => createEmailAndPassword()}></Button>
