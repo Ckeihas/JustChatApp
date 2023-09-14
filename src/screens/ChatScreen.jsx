@@ -12,9 +12,10 @@ export default function ChatScreen(){
     console.log("The datum: ", data)
     const navigation = useNavigation();
     const [messages, setMessages] = useState([])
-    console.log("Current user: ", messages)
+    //console.log("Current user: ", messages)
 
-    const getMessagesFunc = async () => {
+    const getMessagesFunc = useCallback(async () => {
+        
         const messageRef = collection(db, "message");
         const queryMessages = query(messageRef, where("chatID", "==", data.user.chatId))
         const getMessages = await getDocs(queryMessages)
@@ -38,29 +39,20 @@ export default function ChatScreen(){
             const sortedmessages = messagesArray.sort((a, b) => a.createdAt - b.createdAt);
             setMessages(sortedmessages.reverse())
         }
-    }
-    useEffect(() => {      
-        
-        getMessagesFunc();
-        
-        // setMessages([
-        // {
-        //     _id: 1,
-        //     text: 'Hello developer',
-        //     createdAt: new Date(),
-        //     user: {
-        //     _id: 2,
-        //     name: 'React Native',
-        //     avatar: 'https://placeimg.com/140/140/any',
-        //     },
-        // },
-        // ])
-        // return () => unsubscribe();
+    }, [])
+    useEffect( () => {      
+        const chatRef = doc(db, "chat", data.user.chatId)
+        const unsubscribe = onSnapshot((chatRef), async (snapshot) => {
+            getMessagesFunc()
+        })
+        return () => unsubscribe();
     }, [])
 
-    const addMessage = async (message) => {
+    const addMessage = useCallback(async (message) => {
         const messageRef = collection(db, "message")
         const chatRef = doc(db, "chat", data.user.chatId)
+
+        console.log("GIFTED CHAT: ", message)
 
         await addDoc(messageRef, {
         chatID: data.user.chatId,         
@@ -68,69 +60,13 @@ export default function ChatScreen(){
         text: message[0].text,
         timestamp: new Date()              
         }).then(async item => {
+            console.log("ITEM: ", item.path)
             await updateDoc(chatRef, {
                 text: item.path
             })
-        }).then(() => {
-            const chatRef = doc(db, "chat", data.user.chatId)
-            const unsubscribe = onSnapshot((chatRef), async (snapshot) => {
-                //console.log("MUUTOS: ", snapshot.data())
-                let counter = 0;
-                console.log(counter)
-                if(snapshot.exists() && snapshot.data().text != ""){
-                    // const messageRef = doc(db, snapshot.data().text)
-                    // const querySnapshot = await getDoc(messageRef)
-                    //console.log("Snapshot: ",snapshot.data())
-                    counter++
-                    const messageRef = doc(db, snapshot.data().text)
-                    const newMessage = await getDoc(messageRef)
-                    console.log("Tuliko viesti: ", newMessage.id)
-                    const date = new Date(newMessage.data().timestamp.seconds * 1000 + newMessage.data().timestamp.nanoseconds / 1000000)
-                    const objectToFind = { _id: newMessage.id};
-    
-                    
-                    const containsObject = messages.some(item => item._id === objectToFind._id);
-                        if(containsObject){
-                            console.log("Löyty", containsObject)
-                        } else {
-                            setMessages(previousMessages =>
-                                GiftedChat.append(previousMessages, {
-                                    _id: newMessage.id,
-                                    text: newMessage.data().text,
-                                    createdAt: date,
-                                    user: {
-                                        _id: newMessage.data().sender
-                                    }
-                                }),
-                            )
-                            //console.log("Kaikki viestit: ", messages)
-                        }
-                    
-                    // console.log('Messages:', messages.map(item => item._id));
-                    // console.log('Object to Find:', objectToFind._id);
-                    
-                        // GiftedChat.append({
-                        //     _id: querySnapshot.data().chatID,
-                        //     text: querySnapshot.data().text,
-                        //     createdAt: querySnapshot.data().timestamp,
-                        //     user: {
-                        //         _id: querySnapshot.data().sender
-                        //     }
-                        // })
-                        console.log("kui mont kertaa: ", counter)
-                }
-            })
-            return () => unsubscribe();
         })
-        
-    };
+    }, []);
 
-    const onSend = useCallback((messages = []) => {
-        console.log("The viesti: ", messages[0].text)
-        setMessages(previousMessages =>
-        GiftedChat.append(previousMessages, messages),
-        )
-    }, [])
     return(
         <SafeAreaView style={{flex: 1}}>
             <View style={styles.headercont}>
