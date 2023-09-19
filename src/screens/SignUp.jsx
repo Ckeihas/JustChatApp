@@ -46,7 +46,9 @@ export default function SignUp(){
                 console.log("User not found")
                 await addDoc(usersRef, {
                     name: user.displayName,
-                    email: user.email
+                    email: user.email,
+                    contacts: [],
+                    request: []
                 })
             }
             
@@ -75,7 +77,9 @@ export default function SignUp(){
                 console.log("User not found")
                 await addDoc(usersRef, {
                     name: userName,
-                    email: email
+                    email: email,
+                    contacts: [],
+                    request: []
                 })
                 navigation.push("home", userCredential)
             }

@@ -14,21 +14,7 @@ export default function FriendRequests(){
     const navigation = useNavigation();
     useEffect(() => {
         const userRef = doc(db, "users", currentUser)
-        // const thePath = doc(db, "users/" + newContact.id);
-        // console.log("Tie: ", thePath.path)
-        // const q = query(userRef, where("request", "==", thePath.path))
-        
-        // onSnapshot(userRef, async (snapshot) => {
-        //     const getUserData = await getDoc(snapshot)
-        //     console.log("User data: ", getUserData)
-        //     getUserData.docChanges().forEach((change) => {
-        //         if(change.type === "removed"){
-        //             console.log("Removed succcesfull: ")
-        //         }
-        //     })
-        //     // const field = snapshot.get('request');
-        //     // console.log("Muutos: ", field)
-        // })
+
         const getFriendRequest = async (field) => {
             const userRef = doc(db, "users", currentUser)
             const getUserData = await getDoc(userRef)
@@ -41,8 +27,7 @@ export default function FriendRequests(){
                     const refDoc = doc(db, reference.path);
                     const refSnapshot = await getDoc(refDoc);
                     requestArray.push(refSnapshot)
-                    // console.log("Käyttäjän id: ", refSnapshot.id)
-                    // console.log("Käyttäjä: ", refSnapshot)
+  
                     if(counter == requestArray.length){
                         setFriendRequest(requestArray)
                         counter = 0

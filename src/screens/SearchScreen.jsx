@@ -13,11 +13,13 @@ export default function SearchScreen(){
     const [searchEmail, setSearchEmail] = useState("");
     const [loading, setLoading] = useState(false);
     const [foundUser, setFoundUser] = useState();
+    const [notFoundMsg, setNotFoundMsg] = useState(false)
 
     const searchUser = async () => {
+        setNotFoundMsg(false)
         setLoading(true);
         const usersRef = collection(db, "users");
-        const findUser = query(usersRef, where("email", "==", searchEmail))
+        const findUser = query(usersRef, where("email", "==", searchEmail.toLowerCase()))
         const querySnapshot = await getDocs(findUser);
 
         if(!querySnapshot.empty) {
@@ -32,6 +34,8 @@ export default function SearchScreen(){
             setLoading(false);
         } else {
             //Users not found
+            setNotFoundMsg(true)
+            setLoading(false);
         }
     }
 
@@ -67,10 +71,12 @@ export default function SearchScreen(){
                             <Text style={styles.addText}>Add friend+</Text>
                         </TouchableOpacity>
                     </View>
-                ) : (
-                    <View>
-                        
+                ) : notFoundMsg ? (
+                    <View style={styles.notFoundCont}>
+                        <Text style={styles.notFoundMessage}>User not found. Check if the email is correct.</Text>
                     </View>
+                ) : (
+                    <View></View>
                 )
             }
             
@@ -122,5 +128,14 @@ const styles = StyleSheet.create({
     addText: {
         color: 'white',
         fontWeight: 'bold'
+    },
+    notFoundCont: {
+        alignItems: 'center',
+        paddingHorizontal: 80
+    },
+    notFoundMessage: {
+        fontWeight: 'bold',
+        fontSize: 14,
+        textAlign: 'center'
     }
 })
