@@ -17,6 +17,3 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app)
 export const db = getFirestore(app);
-//IOS BUNDLE ID: 300465958210-8tuioghc0ojvsannd1hot9q3qhivqqde.apps.googleusercontent.com
-
-//Android:  300465958210-g8878nn7586gvt0vf7g3npdcg2k4ev03.apps.googleusercontent.com
